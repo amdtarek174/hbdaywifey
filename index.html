@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>For Nada &middot; 30 September 2026</title>
+<meta name="description" content="A countdown and a new message every day, counting down to Nada's birthday." />
+
+<!-- Display fonts (page still looks good if these fail to load) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,500;0,600;1,400&family=Montserrat:wght@300;400;600&display=swap"
+  rel="stylesheet" />
+
+<style>
+  /* ---------- Theme ---------- */
+  :root {
+    --ink:        #fdf6f3;
+    --ink-soft:   rgba(253, 246, 243, 0.78);
+    --gold:       #f0c987;
+    --rose:       #ff8fa8;
+    --plum-deep:  #1b0a1e;
+    --plum:       #3d0f33;
+    --wine:       #6b1338;
+
+    --font-script: "Great Vibes", "Segoe Script", "Brush Script MT", cursive;
+    --font-serif:  "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-sans:   "Montserrat", "Segoe UI", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    padding: clamp(1.25rem, 4vw, 3rem) 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    color: var(--ink);
+    background:
+      radial-gradient(ellipse at 15% 12%,  rgba(255, 143, 168, 0.35), transparent 55%),
+      radial-gradient(ellipse at 85% 85%,  rgba(240, 201, 135, 0.22), transparent 55%),
+      linear-gradient(160deg, var(--plum-deep) 0%, var(--plum) 45%, var(--wine) 100%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  /* ---------- Floating hearts layer ---------- */
+  .petals {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .petal {
+    position: absolute;
+    bottom: -8vh;
+    color: var(--rose);
+    opacity: 0;
+    animation-name: rise;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform, opacity;
+  }
+  @keyframes rise {
+    0%   { transform: translate3d(0, 0, 0) rotate(0deg);         opacity: 0; }
+    12%  {                                                        opacity: 0.75; }
+    50%  { transform: translate3d(3.5vw, -55vh, 0) rotate(160deg); }
+    88%  {                                                        opacity: 0.5; }
+    100% { transform: translate3d(-2.5vw, -115vh, 0) rotate(340deg); opacity: 0; }
+  }
+
+  /* ---------- Card ---------- */
+  main {
+    position: relative;
+    z-index: 1;
+    width: min(56rem, 100%);
+    padding: clamp(1.75rem, 5vw, 3.5rem);
+    text-align: center;
+    border-radius: 1.75rem;
+    border: 1px solid rgba(240, 201, 135, 0.35);
+    background: rgba(27, 10, 30, 0.42);
+    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(14px) saturate(120%);
+    -webkit-backdrop-filter: blur(14px) saturate(120%);
+    animation: fadeUp 1s ease-out both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(1.5rem); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .eyebrow {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 0.72rem;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  h1 {
+    margin: 0.35rem 0 0;
+    font-family: var(--font-script);
+    font-weight: 400;
+    font-size: clamp(4rem, 17vw, 9rem);
+    line-height: 0.95;
+    color: var(--gold);
+    text-shadow: 0 0 2.5rem rgba(240, 201, 135, 0.35);
+  }
+
+  .rule {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.9rem;
+    margin: 1.1rem auto 1.75rem;
+    color: var(--rose);
+  }
+  .rule::before,
+  .rule::after {
+    content: "";
+    width: min(7rem, 18vw);
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+  }
+
+  /* ---------- Countdown ---------- */
+  .countdown {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(0.5rem, 2vw, 1.1rem);
+    margin: 0 0 0.9rem;
+    padding: 0;
+    list-style: none;
+  }
+  .unit {
+    min-width: clamp(4.25rem, 17vw, 6.5rem);
+    padding: 0.85rem 0.6rem 0.7rem;
+    border-radius: 1rem;
+    border: 1px solid rgba(240, 201, 135, 0.28);
+    background: rgba(255, 255, 255, 0.06);
+  }
+  .unit b {
+    display: block;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: clamp(1.9rem, 7vw, 3rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .unit span {
+    display: block;
+    margin-top: 0.45rem;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 0.6rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .target-date {
+    margin: 0 0 2.25rem;
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Daily message ---------- */
+  .day-label {
+    margin: 0 0 0.85rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  blockquote {
+    margin: 0 auto;
+    max-width: 34rem;
+    font-size: clamp(1.35rem, 4vw, 2.1rem);
+    font-style: italic;
+    font-weight: 300;
+    line-height: 1.5;
+  }
+  blockquote.swap { animation: soften 0.9s ease-out both; }
+  @keyframes soften {
+    from { opacity: 0; transform: translateY(0.6rem) scale(0.99); filter: blur(4px); }
+    to   { opacity: 1; transform: none; filter: none; }
+  }
+  .signature {
+    margin: 1.5rem 0 0;
+    font-family: var(--font-script);
+    font-size: clamp(1.5rem, 5vw, 2.1rem);
+    color: var(--rose);
+  }
+
+  /* ---------- Archive of revealed messages ---------- */
+  .archive {
+    margin-top: 2.5rem;
+    text-align: left;
+    border-top: 1px solid rgba(240, 201, 135, 0.22);
+    padding-top: 1.25rem;
+  }
+  .archive summary {
+    cursor: pointer;
+    list-style: none;
+    text-align: center;
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 0.5rem;
+    border-radius: 0.6rem;
+  }
+  .archive summary::-webkit-details-marker { display: none; }
+  .archive summary:hover,
+  .archive summary:focus-visible { color: var(--gold); }
+  .archive ol {
+    margin: 1.25rem 0 0;
+    padding-left: 1.25rem;
+    max-height: 17rem;
+    overflow-y: auto;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+  .archive li { margin-bottom: 0.7rem; padding-left: 0.35rem; }
+  .archive li::marker { color: var(--gold); font-size: 0.85rem; }
+
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Respect users who prefer less motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+</style>
+</head>
+
+<body>
+  <!-- Decorative background, hidden from assistive tech -->
+  <div class="petals" id="petals" aria-hidden="true"></div>
+
+  <main>
+    <p class="eyebrow">Counting down to</p>
+    <h1>Nada</h1>
+    <div class="rule" aria-hidden="true">&#10084;</div>
+
+    <!-- Countdown: seconds change too fast to announce, so the numbers are
+         silent for screen readers and a calmer summary is announced instead. -->
+    <ol class="countdown" id="countdown" role="timer" aria-hidden="true">
+      <li class="unit"><b id="days">--</b><span>Days</span></li>
+      <li class="unit"><b id="hours">--</b><span>Hours</span></li>
+      <li class="unit"><b id="minutes">--</b><span>Minutes</span></li>
+      <li class="unit"><b id="seconds">--</b><span>Seconds</span></li>
+    </ol>
+    <p class="sr-only" id="countdownSummary" aria-live="polite"></p>
+
+    <p class="target-date">30 September 2026</p>
+
+    <p class="day-label" id="dayLabel">Today&rsquo;s note</p>
+    <blockquote id="message">Loading today&rsquo;s message&hellip;</blockquote>
+    <p class="signature">&mdash; always yours, Tarek</p>
+
+    <details class="archive">
+      <summary id="archiveSummary">Every note so far</summary>
+      <ol id="archiveList"></ol>
+    </details>
+  </main>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------------
+     1. The big day: 30 September 2026, 00:00 local time.
+        Month is 0-based in JavaScript, so 8 = September.
+     ------------------------------------------------------------------ */
+  var TARGET = new Date(2026, 8, 30, 0, 0, 0, 0);
+
+  /* ------------------------------------------------------------------
+     2. The messages. One is revealed per day, in order, so the last
+        ones land right before her birthday. Add or edit freely.
+     ------------------------------------------------------------------ */
+  var MESSAGES = [
+    "Something is coming, and it has your name on it.",
+    "I started counting the days, and every single one of them is better because you are in it.",
+    "Loving you never felt like a decision. It felt like recognising something I already knew.",
+    "You make ordinary mornings feel like a small celebration.",
+    "If I had to choose again, in any life, in any year, it would still be you.",
+    "You are the calm in my noise and the warmth in my quiet.",
+    "I keep a private collection of your laughs. It is my favourite thing I own.",
+    "Thank you for being kind on the days when kindness was hard.",
+    "You are not a chapter in my story. You are the language it is written in.",
+    "There is a version of me that only exists when you are in the room. I like him best.",
+    "Some people arrive in your life. You arrived in mine and rearranged the furniture beautifully.",
+    "The way you care about people, quietly and without applause, still amazes me.",
+    "Home stopped being a place the day it became you.",
+    "I would rather have a bad day with you than a perfect one without you.",
+    "You have carried more than you ever complained about. I noticed. I always notice.",
+    "Every plan I make in my head has you in it before I even realise I put you there.",
+    "You are proof that the best things in life are not found. They are recognised.",
+    "I love how you say my name. Nobody else says it the same way.",
+    "The surprise is getting closer. Try not to guess. You always guess.",
+    "Growing older does not scare me. Doing it beside you sounds like the whole point.",
+    "You are my favourite conversation, my favourite silence, my favourite everything.",
+    "Almost there. I have been keeping a secret and it is getting harder to hold.",
+    "If I listed everything I love about you, this page would never finish loading.",
+    "You are the reason I believe in soft, steady, unremarkable, unshakeable love.",
+    "Four more sunrises. Then something just for you.",
+    "Three days. Wear something you love. That is all I will say.",
+    "Two days. My heart is doing that thing it does around you.",
+    "Tomorrow, Nada. Tomorrow the counting stops and the celebrating starts.",
+    "Tonight is the last night of waiting. Sleep well, birthday girl.",
+    "It is almost midnight somewhere in my chest. Happy birthday, my love."
+  ];
+
+  /* Shown on 30 September and after. */
+  var BIRTHDAY_MESSAGE =
+    "Happy birthday, Nada. Today the whole world is just a background for you.";
+
+  /* ------------------------------------------------------------------
+     3. Helpers
+     ------------------------------------------------------------------ */
+  function pad(n) {
+    return n < 10 ? "0" + n : String(n);
+  }
+
+  function startOfDay(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  }
+
+  /* Whole calendar days from today until the target day. */
+  function daysUntilTarget() {
+    var MS_PER_DAY = 24 * 60 * 60 * 1000;
+    var diff = startOfDay(TARGET).getTime() - startOfDay(new Date()).getTime();
+    return Math.round(diff / MS_PER_DAY);
+  }
+
+  /* Maps "days left" to a message index. The fewer days remain, the
+     further into the list we are, so the final notes land last. */
+  function messageIndexFor(daysLeft) {
+    var idx = MESSAGES.length - daysLeft;
+    if (idx < 0) { idx = 0; }
+    if (idx > MESSAGES.length - 1) { idx = MESSAGES.length - 1; }
+    return idx;
+  }
+
+  /* ------------------------------------------------------------------
+     4. Countdown ticker
+     ------------------------------------------------------------------ */
+  var elDays    = document.getElementById("days");
+  var elHours   = document.getElementById("hours");
+  var elMinutes = document.getElementById("minutes");
+  var elSeconds = document.getElementById("seconds");
+  var elSummary = document.getElementById("countdownSummary");
+
+  var lastAnnouncedMinute = null;
+
+  function tick() {
+    var remaining = TARGET.getTime() - Date.now();
+
+    if (remaining <= 0) {
+      elDays.textContent = elHours.textContent =
+        elMinutes.textContent = elSeconds.textContent = "00";
+      elSummary.textContent = "The day is here. Happy birthday, Nada.";
+      return false;
+    }
+
+    var totalSeconds = Math.floor(remaining / 1000);
+    var days    = Math.floor(totalSeconds / 86400);
+    var hours   = Math.floor((totalSeconds % 86400) / 3600);
+    var minutes = Math.floor((totalSeconds % 3600) / 60);
+    var seconds = totalSeconds % 60;
+
+    elDays.textContent    = pad(days);
+    elHours.textContent   = pad(hours);
+    elMinutes.textContent = pad(minutes);
+    elSeconds.textContent = pad(seconds);
+
+    /* Announce once a minute instead of once a second. */
+    if (minutes !== lastAnnouncedMinute) {
+      lastAnnouncedMinute = minutes;
+      elSummary.textContent =
+        days + " days, " + hours + " hours and " + minutes +
+        " minutes until 30 September 2026.";
+    }
+    return true;
+  }
+
+  var timer = setInterval(function () {
+    if (!tick()) {
+      clearInterval(timer);
+      renderMessage();   /* switch straight to the birthday note at midnight */
+    }
+  }, 1000);
+  tick();
+
+  /* ------------------------------------------------------------------
+     5. Message of the day + archive of what has been revealed
+     ------------------------------------------------------------------ */
+  var elMessage  = document.getElementById("message");
+  var elDayLabel = document.getElementById("dayLabel");
+  var elArchive  = document.getElementById("archiveList");
+  var elArchiveSummary = document.getElementById("archiveSummary");
+
+  function renderMessage() {
+    var daysLeft = daysUntilTarget();
+
+    if (daysLeft <= 0) {
+      elDayLabel.textContent = "Happy birthday";
+      elMessage.textContent  = BIRTHDAY_MESSAGE;
+      buildArchive(MESSAGES.length - 1);
+    } else {
+      var idx = messageIndexFor(daysLeft);
+      elDayLabel.textContent =
+        daysLeft === 1 ? "One day to go" : daysLeft + " days to go";
+      elMessage.textContent = MESSAGES[idx];
+      buildArchive(idx);
+    }
+
+    /* Restart the fade-in animation. */
+    elMessage.classList.remove("swap");
+    void elMessage.offsetWidth;
+    elMessage.classList.add("swap");
+  }
+
+  function buildArchive(uptoIndex) {
+    elArchive.innerHTML = "";
+    for (var i = 0; i <= uptoIndex; i++) {
+      var li = document.createElement("li");
+      li.textContent = MESSAGES[i];
+      elArchive.appendChild(li);
+    }
+    var count = uptoIndex + 1;
+    elArchiveSummary.textContent =
+      count === 1 ? "1 note so far" : "All " + count + " notes so far";
+  }
+
+  renderMessage();
+
+  /* If the page is left open overnight, refresh the message at the
+     turn of the day rather than requiring a reload. */
+  var shownDay = startOfDay(new Date()).getTime();
+  setInterval(function () {
+    var today = startOfDay(new Date()).getTime();
+    if (today !== shownDay) {
+      shownDay = today;
+      renderMessage();
+    }
+  }, 60 * 1000);
+
+  /* ------------------------------------------------------------------
+     6. Floating hearts (purely decorative, skipped if motion is reduced)
+     ------------------------------------------------------------------ */
+  var reduceMotion = window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!reduceMotion) {
+    var layer  = document.getElementById("petals");
+    var shapes = ["\u2764", "\u2765", "\u273F", "\u2726"];
+
+    for (var h = 0; h < 26; h++) {
+      var petal = document.createElement("span");
+      petal.className = "petal";
+      petal.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+      petal.style.left = (Math.random() * 100).toFixed(2) + "vw";
+      petal.style.fontSize = (0.7 + Math.random() * 1.4).toFixed(2) + "rem";
+      petal.style.animationDuration = (13 + Math.random() * 14).toFixed(1) + "s";
+      petal.style.animationDelay = (-Math.random() * 22).toFixed(1) + "s";
+      if (Math.random() > 0.55) { petal.style.color = "#f0c987"; }
+      layer.appendChild(petal);
+    }
+  }
+})();
+</script>
+</body>
+</html>
